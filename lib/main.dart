@@ -1,6 +1,5 @@
 
-                        
-                                       import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const TournamentApp());
@@ -25,17 +24,15 @@ class TournamentApp extends StatelessWidget {
 
 // Global Application State & Storage
 String adminUpiId = "9876543210@paytm";
-String whatsappSupportNumber = "9289678990"; // WhatsApp Only Contact
-bool autoApproveDeposits = false; // Admin Toggle for Auto Approve Deposit
+String whatsappSupportNumber = "9289678990";
+bool autoApproveDeposits = false;
 
-// Logged In User State
 bool isLoggedIn = false;
 String currentUserName = "";
 String currentFfUsername = "";
 String currentUserPhone = "";
 double userWalletBalance = 200.0;
 
-// User Statistics
 int totalMatchesPlayed = 0;
 int totalMatchesWon = 0;
 int totalMatchesLost = 0;
@@ -44,7 +41,6 @@ double totalEarning = 0.0;
 double totalDepositAmt = 200.0;
 double totalWithdrawAmt = 0.0;
 
-// Video Tutorials Data List (Managed by Admin)
 List<Map<String, String>> appTutorialVideos = [
   {
     'title': 'How to Join Tournament & Select Slot',
@@ -56,12 +52,11 @@ List<Map<String, String>> appTutorialVideos = [
   }
 ];
 
-// Matches Data Store
 List<Map<String, dynamic>> tournamentMatches = [
   {
     'id': 'M101',
     'title': 'Bermuda War',
-    'matchType': 'Solo', // Solo, Duo, or Squad
+    'matchType': 'Solo',
     'fee': 20.0,
     'prize': 500.0,
     'time': '06:00 PM',
@@ -75,10 +70,8 @@ List<Map<String, dynamic>> tournamentMatches = [
   },
 ];
 
-// User's Joined Matches
 List<Map<String, dynamic>> myJoinedMatches = [];
 
-// Match Results Data List
 List<Map<String, dynamic>> completedMatchResults = [
   {
     'matchTitle': 'Bermuda Grand War (Solo)',
@@ -91,7 +84,6 @@ List<Map<String, dynamic>> completedMatchResults = [
   }
 ];
 
-// Transactions History
 List<Map<String, String>> transactionHistory = [
   {'type': 'Deposit', 'amount': '200', 'status': 'Approved', 'date': '05 Sep 2026', 'txnId': 'TXN12345678'},
 ];
@@ -99,7 +91,6 @@ List<Map<String, String>> transactionHistory = [
 double totalRevenueCollected = 500.0;
 double totalPrizeDistributed = 200.0;
 
-// ---------------- 1. AUTHENTICATION (LOGIN / SIGNUP) ----------------
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
 
@@ -211,7 +202,6 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 }
 
-// ---------------- MAIN APP HOME & NAVIGATION ----------------
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -301,10 +291,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// ---------------- TAB 1: ALL TOURNAMENTS & JOINING ----------------
 class HomeTab extends StatefulWidget {
   final VoidCallback onJoined;
-  const HomeTab({super, required this.onJoined});
+  const HomeTab({super.key, required this.onJoined});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -545,7 +534,6 @@ class _HomeTabState extends State<HomeTab> {
   }
 }
 
-// ---------------- TAB 2: MY MATCHES & MATCH RESULTS ----------------
 class MyMatchesTab extends StatelessWidget {
   const MyMatchesTab({super.key});
 
@@ -566,7 +554,6 @@ class MyMatchesTab extends StatelessWidget {
           Expanded(
             child: TabBarView(
               children: [
-                // Sub-Tab 1: Joined Matches
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: myJoinedMatches.isEmpty
@@ -622,8 +609,6 @@ class MyMatchesTab extends StatelessWidget {
                           },
                         ),
                 ),
-
-                // Sub-Tab 2: Match Results (Kills, Winners & Earnings)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: completedMatchResults.isEmpty
@@ -691,7 +676,6 @@ class MyMatchesTab extends StatelessWidget {
   }
 }
 
-// ---------------- TAB 3: WALLET SYSTEM (DYNAMIC QR DEPOSIT & WITHDRAW) ----------------
 class WalletTab extends StatefulWidget {
   const WalletTab({super.key});
 
@@ -712,7 +696,6 @@ class _WalletTabState extends State<WalletTab> {
             String enterAmt = amountController.text.trim();
             double amtVal = double.tryParse(enterAmt) ?? 0;
 
-            // Generate UPI Link and Dynamic QR Code Image URL
             String upiUrl = "upi://pay?pa=$adminUpiId&pn=FFTournament&am=$amtVal&cu=INR";
             String qrImageUrl = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=${Uri.encodeComponent(upiUrl)}&choe=UTF-8";
 
@@ -733,8 +716,6 @@ class _WalletTabState extends State<WalletTab> {
                     const SizedBox(height: 12),
                     Text('Scan & Pay ₹${amtVal > 0 ? amtVal : "0"}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange)),
                     const SizedBox(height: 8),
-
-                    // Dynamic QR Scanner Container
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(border: Border.all(color: Colors.deepOrange, width: 2), borderRadius: BorderRadius.circular(12)),
@@ -769,7 +750,6 @@ class _WalletTabState extends State<WalletTab> {
 
                       setState(() {
                         if (autoApproveDeposits) {
-                          // AUTO-APPROVE LOGIC (If enabled by Admin)
                           userWalletBalance += reqAmt;
                           totalDepositAmt += reqAmt;
                           transactionHistory.add({
@@ -783,7 +763,6 @@ class _WalletTabState extends State<WalletTab> {
                             const SnackBar(content: Text('Deposit Automatically Approved! Wallet Updated.'), backgroundColor: Colors.green),
                           );
                         } else {
-                          // MANUAL APPROVAL LOGIC
                           transactionHistory.add({
                             'type': 'Deposit',
                             'amount': amountController.text,
@@ -839,7 +818,6 @@ class _WalletTabState extends State<WalletTab> {
               double reqAmt = double.tryParse(amountController.text) ?? 0;
               if (reqAmt > 0 && reqAmt <= userWalletBalance && upiController.text.isNotEmpty) {
                 setState(() {
-                  // WITHDRAWAL IS ALWAYS MANUAL ADMIN APPROVAL
                   transactionHistory.add({
                     'type': 'Withdrawal',
                     'amount': amountController.text,
@@ -926,7 +904,6 @@ class _WalletTabState extends State<WalletTab> {
   }
 }
 
-// ---------------- TAB 4: MY PROFILE & COMPLETE STATISTICS ----------------
 class ProfileTab extends StatelessWidget {
   const ProfileTab({super.key});
 
@@ -992,7 +969,6 @@ class ProfileTab extends StatelessWidget {
   }
 }
 
-// ---------------- TAB 5: SETTINGS & WHATSAPP ONLY SUPPORT ----------------
 class SettingsTab extends StatelessWidget {
   const SettingsTab({super.key});
 
@@ -1048,7 +1024,6 @@ class SettingsTab extends StatelessWidget {
   }
 }
 
-// ---------------- ADMIN PANEL (TOGGLES, RESULTS DECLARATION, APPROVALS) ----------------
 class FullAdminDashboard extends StatefulWidget {
   const FullAdminDashboard({super.key});
 
@@ -1148,7 +1123,6 @@ class _FullAdminDashboardState extends State<FullAdminDashboard> {
         ),
         body: TabBarView(
           children: [
-            // Tab 1: Create Match
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -1178,8 +1152,6 @@ class _FullAdminDashboardState extends State<FullAdminDashboard> {
                 ],
               ),
             ),
-
-            // Tab 2: Declare Results
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -1200,8 +1172,6 @@ class _FullAdminDashboardState extends State<FullAdminDashboard> {
                 ],
               ),
             ),
-
-            // Tab 3: Transactions Approval (Deposits & Withdrawals)
             ListView.builder(
               itemCount: transactionHistory.length,
               itemBuilder: (context, index) {
@@ -1255,8 +1225,6 @@ class _FullAdminDashboardState extends State<FullAdminDashboard> {
                 );
               },
             ),
-
-            // Tab 4: Profit Analytics & Auto Approve Controls
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ListView(
@@ -1309,4 +1277,3 @@ class _FullAdminDashboardState extends State<FullAdminDashboard> {
     );
   }
 }
-   
