@@ -543,4 +543,5 @@ class _MatchDetailPageState extends State<MatchDetailPage> {
       totalMatchesPlayed += 1;
 
       bookedSlots[selectedSlot!] = enteredIgn;
+              
      
